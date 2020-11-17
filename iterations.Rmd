@@ -1,0 +1,59 @@
+---
+title: "writing_functions"
+output: github_document
+---
+
+
+```{r}
+library(tidyverse) 
+library(rvest)
+```
+
+
+```{r}
+x_vec = rnorm(30, mean = 5, sd = 3)
+
+x_vec
+
+(x_vec - mean(x_vec))/sd(x_vec)
+
+#^ the Z score
+```
+
+I want a function to compute Z scores 
+
+
+
+```{r}
+z_score = function(x){
+  
+  if(!is.numeric(x)) {
+    stop("Input must be numeric")
+  }
+  
+  if (length(x) < 3) {
+    stop("input must have 3 numbers")
+  }
+  
+  z = (x - mean(x)) / sd(x)
+  
+  return(z)
+}
+
+
+z_score(x_vec)
+ 
+```
+
+
+what my functions won't work on - check error messages
+```{r, error = T}
+z_score(3)
+z_score("biny")
+z_score(mtcars)
+z_score(c(T, T, F, T))
+```
+
+ 
+ 
+
