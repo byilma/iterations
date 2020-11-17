@@ -50,10 +50,45 @@ what my functions won't work on - check error messages
 ```{r, error = T}
 z_score(3)
 z_score("biny")
+z_score("kari")
 z_score(mtcars)
 z_score(c(T, T, F, T))
 ```
 
- 
+  
+```{r}
+mean_and_sd = function(x){
+  
+  if(!is.numeric(x)) {
+    stop("Input must be numeric")
+  }
+  
+  if (length(x) < 3) {
+    stop("input must have 3 numbers")
+  }
+  
+  mean_x = mean(x)
+  sd_x = sd(x)
+            
+   tibble(
+     mean = mean_x, 
+      sd = sd_x
+     )
+}
+
+mean_and_sd(x_vec)
+
+```
+  
+  
+```{r}
+
+x_vec = rnorm(100, mean = 3, sd = 4)
+
+
+
+```
+  
+  
  
 
