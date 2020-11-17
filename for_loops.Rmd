@@ -117,8 +117,23 @@ What if you want a dfft function
 output = map(list_norm, median)
 output = map(list_norm, mean)
 output = map(list_norm, IQR)
+```
 
+What if I don't want the output of the map function to not be a list!
+```{r}
+output = map_dbl(list_norm, median) #getting numbers "dbl" instead of lists! 
 
 ```
+
+
+```{r}
+output = map_df(list_norm, mean_and_sd, .id = "input") 
+```
+
+Here instead of a list of data frames I'm getting a data frame with all the elements in it!
+
+`.id` keeps track of what the input id names are - a/b/c/d ... it gives you a column with these input ids
+
+
 
 
