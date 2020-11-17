@@ -116,3 +116,86 @@ sim_results %>%
 ```
 
 <img src="simulations_files/figure-gfm/unnamed-chunk-5-2.png" width="90%" />
+
+## Let’s try other sample sizes
+
+``` r
+n_list = 
+  list(
+    "n = 30" = 30,
+    "n = 60" = 60,
+    "n = 120" = 120,
+    "n = 240" = 240
+  )
+
+
+
+output = vector("list", length = 4)
+
+output[[1]] = rerun(100, sim_mean_sd(samp_size = n_list[[1]])) %>% bind_rows()
+output[[2]] = rerun(100, sim_mean_sd(samp_size = n_list[[2]])) %>% bind_rows()
+
+for(i in 1:4) {
+  output[[i]] = rerun(100, sim_mean_sd(samp_size = n_list[[i]])) %>% 
+    bind_rows()
+}
+```
+
+``` r
+sim_results = tibble(
+  sample_size = c(30, 60, 120, 240),
+  
+) %>% mutate(
+  output_lists = map(.x = sample_size, ~ rerun(1000, sim_mean_sd(samp_size = .x ))),
+  estimate_dfs = map(output_lists, bind_rows)
+) %>% 
+  select(-output_lists) %>% 
+  unnest(estimate_dfs)
+```
+
+This `sim_results` is just a data frame ^^^
+
+Let’s do some data science on this Data Frame
+
+``` r
+sim_results %>% 
+  mutate(
+    sample_size = str_c("n = ", sample_size), 
+    sample_size = fct_inorder(sample_size)
+  ) %>% 
+  ggplot(aes(x = sample_size, y = mean, fill = sample_size)) + 
+  geom_boxplot()
+```
+
+<img src="simulations_files/figure-gfm/unnamed-chunk-8-1.png" width="90%" />
+
+``` r
+sim_results %>% 
+  mutate(
+    sample_size = str_c("n = ", sample_size), 
+    sample_size = fct_inorder(sample_size)
+  ) %>% 
+  ggplot(aes(x = sample_size, y = mean, fill = sample_size)) + 
+  geom_violin()
+```
+
+<img src="simulations_files/figure-gfm/unnamed-chunk-8-2.png" width="90%" />
+
+``` r
+sim_results %>% 
+  group_by(sample_size) %>% 
+  summarize(
+    avg_samp_mean = mean(mean),
+    sd_samp_mean = sd(mean)
+  )
+```
+
+    ## `summarise()` ungrouping output (override with `.groups` argument)
+
+    ## # A tibble: 4 x 3
+    ##   sample_size avg_samp_mean sd_samp_mean
+    ##         <dbl>         <dbl>        <dbl>
+    ## 1          30          3.00        0.707
+    ## 2          60          3.02        0.516
+    ## 3         120          2.99        0.369
+    ## 4         240          3.00        0.257
