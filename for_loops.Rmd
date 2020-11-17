@@ -23,7 +23,7 @@ summary = summary(rnorm(100))
 
 
 ```{r}
-l %>% View()
+l 
 l$vec_numeric
 l[[1]]
 
@@ -58,10 +58,67 @@ list_norm[[1]]
 Pause & get our old function. 
 
 ```{r}
+mean_and_sd = function(x){
+  
+  if(!is.numeric(x)) {
+    stop("Input must be numeric")
+  }
+  
+  if (length(x) < 3) {
+    stop("input must have 3 numbers")
+  }
+  
+  mean_x = mean(x)
+  sd_x = sd(x)
+            
+   tibble(
+     mean = mean_x, 
+      sd = sd_x
+     )
+}
+```
+
+I can apply this function to each list element. 
+
+```{r}
+list_norm[[1]] %>% mean_and_sd
+list_norm[[2]] %>% mean_and_sd
+list_norm[[3]] %>% mean_and_sd
+list_norm[[4]] %>% mean_and_sd
+```
+
+But it quickly gets tedious to apply the same function over & over & over again to different things. 
+This is where for_loops come into play. 
+
+Let's use a for loop:
+```{r}
+output  = vector("list", length = 4) #creating an output vector that'll hold the output we're hoping to get 
+
+
+#output[[1]] = mean_and_sd(list_norm[[1]]) #putting the outputs of mean_and_sd of the first list item in list_norm into the first element of our "output" vector .... but we don't want to keep doing this for every element. enter: for loops
+
+
+for (i in 1:4) {
+  output[[i]] = mean_and_sd(list_norm[[i]])
+}
 
 ```
 
+## let's try map!
+```{r}
+output2 = map(list_norm, mean_and_sd)
+```
+#the simplicity of map functions!! 
 
 
+What if you want a dfft function
+
+```{r}
+output = map(list_norm, median)
+output = map(list_norm, mean)
+output = map(list_norm, IQR)
+
+
+```
 
 
